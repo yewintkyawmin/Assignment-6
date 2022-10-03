@@ -1,0 +1,436 @@
+#include<iostream>
+#include<string.h>
+#include<fstream>
+#include<conio.h>
+using namespace std;
+
+int number;
+char ans;
+
+void main_menu();
+void cmenu();
+void rmenu();
+void addinfo();
+void viewall();
+void view_sp();
+void edit_sp();
+void removep();
+void findnum();
+void view_Rall();
+void view_Rsp();
+void find_Rnum();
+void delete_Rp();
+char again();
+
+class date 
+{
+	protected:
+		int day,month,year;
+		char ch;
+	public:
+		void set_sdate()
+		{	cout<<"\nEnter Start Date         :";cin>>day>>ch>>month>>ch>>year;	}
+		
+		void show_sdate()
+		{	cout<<"\nStart  Date is     :"<<day<<ch<<month<<ch<<year<<endl;	}
+};
+
+struct Date{
+	int day,month,year;
+	char ch;
+};
+
+class patients
+{
+	protected:
+		char name[30],medicine[30],room[30],address[70],condition[70],ph[20];
+		date sdate;
+		Date d;
+	public:
+		void set_p_data()
+		{
+			cout<<"\nEnter Patient's Name     :";cin>>name;
+			cout<<"\nEnter Allegric Medicine  :";cin>>medicine;
+			cout<<"\nEnter Room Number:";cin>>room;
+			cout<<"\nEnter Patient's Address  :";cin>>address;
+			cout<<"\nEnter Patient's Condition:";cin>>condition;
+			cout<<"\nEnter Patient's Phone no :";cin>>ph;
+			sdate.set_sdate();
+		}
+		void show_p_data()
+		{
+			cout<<"\nPatient's Name is  :"<<name;
+			cout<<"\nAllegric Medicine  :"<<medicine;
+			cout<<"\nRoom Number is	   :"<<room;
+			cout<<"\nPatient's Address  :"<<address;
+			cout<<"\nPatient's Condition:"<<condition;
+			cout<<"\nPatient's Phone no :"<<ph;
+			sdate.show_sdate();
+		}
+		
+		void set_ddate()
+		{	cout<<"\nEnter Discharged Date   :";cin>>d.day>>d.ch>>d.month>>d.ch>>d.year;	}
+		
+		void show_ddate()
+		{	cout<<"\nDischarged Date is  :"<<d.day<<d.ch<<d.month<<d.ch<<d.year<<endl;	}
+		
+		char* getname()
+		{	return name;	}
+		
+		string get_name()
+		{	return name;	}
+};
+
+int main(void)
+{
+	cout<<"\t\t\t\t\t\t\tHospital Data Manipulation and Recording \n";
+	cout<<"\t\t\t\t\t\t----------------------------------------------------------\n\n";
+	while(true)
+	{
+		main_menu();
+		switch(number)
+		{
+			case 1 : cmenu();break;
+			case 2 : rmenu();break;
+			case 3 : cout<<"\n\t\t\t\t\t\t\t\tThank You";exit(0);
+			default: cout<<"Enter Only Number(1~3)";continue;
+		}
+	}
+	return 0;
+}
+
+void main_menu()
+{
+	cin.get();
+	cout<<"\n\t\t\t\t\t\t\t\t\t\"Main Menu\"\n\t\t\t\t\t\t\t\t---------------------------- "
+		<<"\n\n\t\t\t\t\t\tCHOOSE:"
+		<<"\n\t\t\t\t\t\t [1] >> Current Patients Operate "
+		<<"\n\t\t\t\t\t\t [2] >> Recorded Patients Operate"
+		<<"\n\t\t\t\t\t\t [3] >> Exit from Operation";
+	cout<<"\n\t\t\t\t\t\tEnter::";cin>>number;
+}
+
+void cmenu()
+{
+	int num;
+
+	do{
+		cin.get();
+		cout<<"Current Patients Operations"<<"\n--------------------------";
+		cout<<"\nSelect:\n"   <<"(1) - To Add Patient's Informations\n"
+						      <<"(2) - To View All Current Patient's Informations:\n"
+					    	  <<"(3) - To View Specified Patient's Informations\n"
+					          <<"(4) - To Edit Current Patient's Informations\n"
+							  <<"(5) - To Remove from Current Patient's List\n"
+							  <<"(6) - To Look for Numbers of Current Patients\n"
+							  <<"(7) - Back to Main Menu";
+		cout<<"\nEnter Here::";
+		cin>>num;
+	
+		switch(num)
+		{
+			case 1 : addinfo();break;
+			case 2 : viewall();break;
+			case 3 : view_sp();break;
+			case 4 : edit_sp();break;
+			case 5 : removep() ;break;
+			case 6 : findnum();break;
+			case 7 : cout<<"\nGoing back to  Main Menu-----";break;
+		}
+	}while(num!=7);
+	cin.get();
+}
+
+void rmenu()
+{
+	int num;
+	do{
+		cin.get();
+		cout<<"\nSelect:\n" <<"(1) - To View All Recorded Patient's Informations\n"
+						    <<"(2) - To View Specified Recorded Patient Informations\n"
+						    <<"(3) - To Look for Numbers of Recorded Patients\n"
+						    <<"(4) - To Delete Recorded Patients:\n"
+						    <<"(5) - Back to Main Menu";
+		cout<<"\nEnter Here::";
+		cin>>num;
+	
+		switch(num)
+		{
+			case 1 : view_Rall();break;
+			case 2 : view_Rsp();break;
+			case 3 : find_Rnum();break;
+			case 4 : delete_Rp();break;
+			case 5 : cout<<"Going back to  Main Menu-----";break;
+		}
+	}while(num!=5);
+	cin.get();
+}
+
+char again()
+{
+	char answer;
+	cout<<"\nTry again?(y/n) :";cin>>answer;
+	return answer;
+}
+
+void addinfo()
+{
+	patients p;
+	ofstream outfile;
+	do{
+		outfile.open("Patients.dat",ios::app|ios::binary);
+		p.set_p_data();
+		outfile.write((char*)&p,sizeof(p));
+		outfile.close();
+		ans = again();
+	}while(ans=='y');
+	cin.get();
+}
+
+void viewall()
+{
+	patients p;
+	ifstream infile;
+	infile.open("Patients.dat",ios::binary);
+	infile.seekg(0,ios::end);
+	int pos = infile.tellg();
+	int a = pos / sizeof(p);
+	if(a == 0)
+	{	cout<<"\nNo Patients to show\n";	}
+	
+	infile.seekg(0,ios::beg);
+	infile.read((char*)&p,sizeof(p));
+	while(!infile.eof())
+	{
+		p.show_p_data();
+		cout<<"\n------------------------------";
+		infile.read((char*)&p,sizeof(p));
+	}
+	infile.close();
+	cin.get();
+}
+
+void view_sp()
+{
+	char find_name[20];
+	patients p;
+	char* A = p.getname();
+	
+	ifstream infile;
+	do{
+		int temp = 0;
+		infile.open("Patients.dat",ios::binary);
+		cout<<"\nEnter Name U want to find:";cin>>find_name;
+		while(infile.read((char*)&p,sizeof(p)))
+		{
+			if(strcmp(A,find_name)==0)
+			{
+				p.show_p_data();
+				temp = 1;
+			}	
+		}
+		if(temp==0)
+		{
+			cout<<"No Patient!";
+		}
+		infile.close();
+		ans = again();
+	}while(ans=='y');
+	cin.get();
+}
+
+void edit_sp()
+{
+	patients p,pp;
+	char edit_name[20];
+	int tempo = 0;
+	char* B = p.getname();
+	ifstream infile;	
+    do{
+		infile.open("Patients.dat",ios::binary);
+		cout<<"\nEnter Patient's Name U want to edit:";cin>>edit_name;
+		
+		while(infile.read((char*)&p,sizeof(p)))
+		{
+			if(strcmp(B,edit_name)!=0)
+			{	tempo = 1 ;	}
+			else
+			{	tempo = 0 ;break;	}
+		}
+		if (tempo == 1) 
+		{	cout<<"Patient does not exist!";continue;	}	
+		infile.close();	
+		
+		infile.open("Patients.dat",ios::binary);
+		ofstream outfile("Second.dat",ios::binary|ios::app);
+		pp.set_p_data();
+		while(infile.read((char*)&p,sizeof(p)))
+		{
+			if(strcmp(B,edit_name)==0)
+			{	outfile.write((char*)&pp,sizeof(pp));	}
+			else
+			{	outfile.write((char*)&p,sizeof(p));		}	
+		}	
+		
+		infile.close();
+		outfile.close();
+		remove("Patients.dat");
+		rename("Second.dat","Patients.dat");
+		ans = again();
+	}while(ans=='y');
+	cin.get();
+}
+
+void removep()
+{
+	patients p;
+	char remove_name[20];
+
+	char* C = p.getname();
+	ofstream outfile;
+	ofstream ofile;
+	ifstream infile;
+	do{
+		int temporary = 0 ;
+		cout<<"\nEnter Patient's Name U want to remove:";cin>>remove_name;
+		infile.open("Patients.dat",ios::binary);
+		ofile.open("Temp.dat",ios::app|ios::binary);
+		outfile.open("Recorded.dat",ios::app|ios::binary);
+		
+		while(infile.read((char*)&p,sizeof(p)))
+		{
+			if(strcmp(C,remove_name)==0)
+			{
+				p.set_ddate();
+				outfile.write((char*)&p,sizeof(p));
+				temporary = 1;
+			}
+			else
+			{
+				ofile.write((char*)&p,sizeof(p));
+			}
+		}
+		if(temporary == 0)
+		{	cout<<"\nWrong Patient's Name;Does not exist!";	}
+		else
+		{	cout<<"\nRemoving Process Have been done Successfully.";}
+		infile.close();
+		ofile.close();
+		outfile.close();
+		
+		remove("Patients.dat");
+		rename("Temp.dat","Patients.dat");
+		
+		ans = again();
+	}while(ans=='y');
+	cin.get();
+}
+
+void findnum()
+{
+	patients p;
+	ifstream infile;
+	infile.open("Patients.dat",ios::binary);
+	infile.seekg(0,ios::end);
+	int position = infile.tellg();
+	int n = position / sizeof(p) ;
+	
+	cout<<"\nThere are \"" <<n<<"\" persons in Hospital";
+	cin.get();
+}
+
+void view_Rall()
+{
+	patients p;
+	ifstream infile;
+	infile.seekg(0,ios::end);
+	int pos = infile.tellg();
+	int b = pos / sizeof(p);
+	if(b == 0)
+	{	cout<<"\nNo Patients to show";	}
+	
+	infile.seekg(0,ios::beg);
+	infile.open("Recorded.dat",ios::binary);
+	while(infile.read((char*)&p,sizeof(p)))
+	{
+		p.show_p_data();
+		p.show_ddate();
+		cout<<"\n-------------------------------";		
+	} 
+	infile.close();
+	cin.get();
+}
+
+void view_Rsp()
+{
+	patients p;
+	char find_name[20];
+	ifstream infile;
+	do{
+		int temp = 0 ;
+		infile.open("Recorded.dat",ios::binary);
+		cout<<"Enter Patient's name U want to find:";cin>>find_name;
+		while(infile.read((char*)&p,sizeof(p)))
+		{
+			if(p.get_name() == find_name)
+			{
+				p.show_p_data();
+				p.show_ddate();
+				temp = 1 ;
+			}
+		}
+		if(temp == 0)
+		{	cout<<"No Patient!";	}
+		infile.close();
+		ans = again();	
+	}while(ans=='y');
+	cin.get();
+}
+	
+void find_Rnum()
+{
+	patients p;
+	ifstream infile;
+	infile.open("Recorded.dat",ios::binary);
+	infile.seekg(0,ios::end);
+	int position = infile.tellg();
+	int n = position / sizeof(p);
+	cout<<"There are \""<<n<<"\" patients in Recorded List";
+	cin.get();
+}	
+	
+void delete_Rp()
+{
+	patients p;
+	char delete_name[20];
+	ifstream infile;
+	ofstream outfile;
+	do{
+		int numb = 0;
+		infile.open("Recorded.dat",ios::binary);
+		outfile.open("Temporary.dat",ios::binary|ios::app);
+		
+		cout<<"Enter Patient's Name U want to Delete:";cin>>delete_name;
+		while(infile.read((char*)&p,sizeof(p)))
+		{
+			if(p.get_name() == delete_name)
+			{		numb = 1;	}
+			else
+			{
+				outfile.write((char*)&p,sizeof(p));
+			}
+		}
+		if (numb == 0 )	
+		{	cout<<"No Patient!";	}
+		else
+		{	cout<<"\nDeleting Process Done.";	}	
+		
+		infile.close();
+		outfile.close();
+		
+		remove("Recorded.dat");
+		rename("Temporary.dat","Recorded.dat");		
+		ans = again();
+	}while(ans=='y');
+	cin.get();	
+}	
